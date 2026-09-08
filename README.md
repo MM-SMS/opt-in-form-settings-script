@@ -10,7 +10,7 @@ Notion-driven **subscribe form field visibility + copy** for brand sites.
 Install:
 
 ```bash
-npm i github:MM-SMS/subscribe-form-config#main @notionhq/client
+npm i github:MM-SMS/opt-in-form-settings-script#main @notionhq/client
 ```
 
 ## Env

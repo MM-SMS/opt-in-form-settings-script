@@ -9,7 +9,7 @@ Implement Notion-driven subscribe form field visibility + copy using the shared 
 
 ## 1. Install
 ```bash
-npm i github:MM-SMS/subscribe-form-config#main @notionhq/client
+npm i github:MM-SMS/opt-in-form-settings-script#main @notionhq/client
 ```
 
 Env (`.env.example`, `.env.local`, Vercel Preview + Production):
