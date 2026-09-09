@@ -1,10 +1,11 @@
 # subscribe-form-config
 
-Notion-driven **subscribe form field visibility + copy** for brand sites.
+Notion-driven **subscribe form field visibility, required flags, and copy** for brand sites.
 
 - Shared Notion database, **one row per brand**
 - Brand cell = real domain (`lavessia.org`) → code matches `lavessia_org`
 - Hidden fields still submit as `''` / `false` (do not change API payload shape)
+- Each field can be required or optional via `{field}_required`
 - Invalid visibility pairs automatically fall back to the full default form
 
 Install:
@@ -24,11 +25,19 @@ No `BRAND_SLUG` env.
 
 ## Notion columns
 
-`Brand` (Select) + for each field `{field}` rich text + `{field}_visible` checkbox:
+`Brand` (Select) + for each field `{field}` rich text + `{field}_visible` + `{field}_required` checkboxes:
 
 `firstName`, `lastName`, `email`, `phone`, `cbEmail`, `cbSms`, `cbMarketing`, `cbTerms`
 
-☑️ show · ☐ hide · empty text = code default
+- `*_visible`: ☑️ show · ☐ hide
+- `*_required`: ☑️ required · ☐ optional (ignored if the field is hidden)
+- empty text = code default
+
+Code defaults: firstName, lastName, cbTerms **required**; email, phone, and other consents **optional**.
+
+```ts
+import { isSubscribeFieldVisible, isSubscribeFieldRequired, subscribeFieldLabel } from 'subscribe-form-config/client'
+```
 
 ## Site wiring
 
@@ -58,5 +67,5 @@ export const {
 Client:
 
 ```ts
-import { useSubscribeFormConfig, isSubscribeFieldVisible, subscribeFieldText } from 'subscribe-form-config/client'
+import { useSubscribeFormConfig, isSubscribeFieldVisible, isSubscribeFieldRequired, subscribeFieldLabel } from 'subscribe-form-config/client'
 ```

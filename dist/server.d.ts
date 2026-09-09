@@ -3,7 +3,7 @@ import type { CreateSubscribeFormConfigOptions, SubscribeFormConfig, SubscribeFo
 export type { CreateSubscribeFormConfigOptions, SubscribeFormBrand, SubscribeFormConfig, SubscribeFormConfigContext, SubscribeFormConfigResult, SubscribeFormDefaultTexts, SubscribeFormFieldConfig, SubscribeFormFieldKey, } from './types';
 export { SUBSCRIBE_FORM_FIELD_KEYS } from './types';
 export { buildDefaultSubscribeFormConfig, genericConsentCopy } from './defaults';
-export { isSubscribeFieldVisible, subscribeFieldText, mergeSubscribeFormConfig, isSubscribeFormFieldKey, normalizeBrandDomain, domainToBrandSlug, visibleColumnName, getSubscribeFormConfigIssues, isSubscribeFormConfigCoherent, resolveSubscribeFormConfig, } from './helpers';
+export { isSubscribeFieldVisible, isSubscribeFieldRequired, subscribeFieldText, subscribeFieldLabel, mergeSubscribeFormConfig, isSubscribeFormFieldKey, normalizeBrandDomain, domainToBrandSlug, visibleColumnName, requiredColumnName, getSubscribeFormConfigIssues, isSubscribeFormConfigCoherent, resolveSubscribeFormConfig, } from './helpers';
 export { fetchSubscribeFormConfigFromNotion } from './notion';
 export declare function createSubscribeFormConfig(options: CreateSubscribeFormConfigOptions): {
     getSubscribeFormConfig: () => Promise<SubscribeFormConfig>;

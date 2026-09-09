@@ -25,12 +25,15 @@ export { SUBSCRIBE_FORM_FIELD_KEYS } from './types'
 export { buildDefaultSubscribeFormConfig, genericConsentCopy } from './defaults'
 export {
   isSubscribeFieldVisible,
+  isSubscribeFieldRequired,
   subscribeFieldText,
+  subscribeFieldLabel,
   mergeSubscribeFormConfig,
   isSubscribeFormFieldKey,
   normalizeBrandDomain,
   domainToBrandSlug,
   visibleColumnName,
+  requiredColumnName,
   getSubscribeFormConfigIssues,
   isSubscribeFormConfigCoherent,
   resolveSubscribeFormConfig,
@@ -101,7 +104,7 @@ export function createSubscribeFormConfig(options: CreateSubscribeFormConfigOpti
     const slug = domainToBrandSlug(brand.domain)
     const cached = unstable_cache(
       () => getSubscribeFormConfigFresh(),
-      ['subscribe-form-config', slug, 'pkg-v1'],
+      ['subscribe-form-config', slug, 'pkg-v2-required'],
       { revalidate: 120 },
     )
     return cached()

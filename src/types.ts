@@ -14,6 +14,8 @@ export type SubscribeFormFieldKey = (typeof SUBSCRIBE_FORM_FIELD_KEYS)[number]
 export interface SubscribeFormFieldConfig {
   /** When false, the field is not rendered. Submit still sends '' / false. */
   visible: boolean
+  /** When true and the field is visible, the site treats it as required. */
+  required: boolean
   /** Input label or checkbox body text. */
   text: string
 }

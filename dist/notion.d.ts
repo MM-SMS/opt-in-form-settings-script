@@ -2,7 +2,9 @@ import type { SubscribeFormConfig } from './types';
 /**
  * Wide Notion table (one row per brand).
  * Brand = real domain (`lavessia.org`); code matches via `lavessia_org`.
- * `{field}_visible` checkbox = show/hide. `{field}` text = label/copy (empty → code default).
+ * `{field}_visible` checkbox = show/hide.
+ * `{field}_required` checkbox = required when visible.
+ * `{field}` text = label/copy (empty → code default).
  * Notion API / SDK v5+: query via `dataSources.query`.
  */
 export declare function fetchSubscribeFormConfigFromNotion(options: {

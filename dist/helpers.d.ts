@@ -1,10 +1,15 @@
 import type { SubscribeFormConfig, SubscribeFormFieldKey } from './types';
-export declare function isSubscribeFieldVisible(config: SubscribeFormConfig, key: SubscribeFormFieldKey): boolean;
-export declare function subscribeFieldText(config: SubscribeFormConfig, key: SubscribeFormFieldKey, fallback?: string): string;
-export declare function mergeSubscribeFormConfig(base: SubscribeFormConfig, overrides: Partial<Record<SubscribeFormFieldKey, Partial<{
+type FieldPatch = Partial<{
     visible: boolean;
+    required: boolean;
     text: string;
-}>>>): SubscribeFormConfig;
+}>;
+export declare function isSubscribeFieldVisible(config: SubscribeFormConfig, key: SubscribeFormFieldKey): boolean;
+export declare function isSubscribeFieldRequired(config: SubscribeFormConfig, key: SubscribeFormFieldKey): boolean;
+export declare function subscribeFieldText(config: SubscribeFormConfig, key: SubscribeFormFieldKey, fallback?: string): string;
+/** Label/copy with a trailing * when Notion marks the field required. */
+export declare function subscribeFieldLabel(config: SubscribeFormConfig, key: SubscribeFormFieldKey, fallback?: string): string;
+export declare function mergeSubscribeFormConfig(base: SubscribeFormConfig, overrides: Partial<Record<SubscribeFormFieldKey, FieldPatch>>): SubscribeFormConfig;
 export declare function isSubscribeFormFieldKey(value: string): value is SubscribeFormFieldKey;
 /**
  * Strip protocol/www/path: `https://www.Lavessia.org/` → `lavessia.org`.
@@ -18,14 +23,17 @@ export declare function normalizeBrandDomain(domain: string): string;
 export declare function domainToBrandSlug(domain: string): string;
 /** Notion checkbox column next to each field text column, e.g. `phone` → `phone_visible`. */
 export declare function visibleColumnName(field: SubscribeFormFieldKey): string;
+/** Notion checkbox: `phone` → `phone_required`. */
+export declare function requiredColumnName(field: SubscribeFormFieldKey): string;
 /**
  * Config coherence vs typical subscribe API rules. Broken Notion rows fall back to full defaults.
  *
- * - firstName + lastName must stay visible (API requires both)
- * - cbTerms must stay visible (API requires termsPrivacyAccepted)
+ * - firstName + lastName must stay visible (payload still sent; required is a separate flag)
+ * - cbTerms must stay visible
  * - email visible ↔ cbEmail visible
  * - phone visible → cbSms visible (API requires informational SMS when phone is set)
  * - cbSms or cbMarketing visible → phone visible
+ * - required on a hidden field is ignored at runtime; flagged here so the row can be fixed
  */
 export declare function getSubscribeFormConfigIssues(config: SubscribeFormConfig): string[];
 export declare function isSubscribeFormConfigCoherent(config: SubscribeFormConfig): boolean;
@@ -35,3 +43,4 @@ export declare function resolveSubscribeFormConfig(config: SubscribeFormConfig, 
     usedFallback: boolean;
     issues: string[];
 };
+export {};

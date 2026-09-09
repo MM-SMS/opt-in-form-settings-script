@@ -12,12 +12,15 @@ export { SUBSCRIBE_FORM_FIELD_KEYS } from './types'
 export { buildDefaultSubscribeFormConfig, genericConsentCopy } from './defaults'
 export {
   isSubscribeFieldVisible,
+  isSubscribeFieldRequired,
   subscribeFieldText,
+  subscribeFieldLabel,
   mergeSubscribeFormConfig,
   isSubscribeFormFieldKey,
   normalizeBrandDomain,
   domainToBrandSlug,
   visibleColumnName,
+  requiredColumnName,
   getSubscribeFormConfigIssues,
   isSubscribeFormConfigCoherent,
   resolveSubscribeFormConfig,

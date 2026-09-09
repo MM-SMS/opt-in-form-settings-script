@@ -20,19 +20,29 @@ export function buildDefaultSubscribeFormConfig(
 ): SubscribeFormConfig {
   const texts = { ...genericConsentCopy(brand), ...extraTexts }
   return {
-    firstName: { visible: true, text: texts.firstName || 'First name *' },
-    lastName: { visible: true, text: texts.lastName || 'Last name *' },
-    email: { visible: true, text: texts.email || 'Email (opt.)' },
-    phone: { visible: true, text: texts.phone || 'Phone (opt.)' },
-    cbEmail: { visible: true, text: texts.cbEmail || genericConsentCopy(brand).cbEmail! },
-    cbSms: { visible: true, text: texts.cbSms || genericConsentCopy(brand).cbSms! },
+    firstName: { visible: true, required: true, text: texts.firstName || 'First name' },
+    lastName: { visible: true, required: true, text: texts.lastName || 'Last name' },
+    email: { visible: true, required: false, text: texts.email || 'Email (opt.)' },
+    phone: { visible: true, required: false, text: texts.phone || 'Phone (opt.)' },
+    cbEmail: {
+      visible: true,
+      required: false,
+      text: texts.cbEmail || genericConsentCopy(brand).cbEmail!,
+    },
+    cbSms: {
+      visible: true,
+      required: false,
+      text: texts.cbSms || genericConsentCopy(brand).cbSms!,
+    },
     cbMarketing: {
       visible: true,
+      required: false,
       text: texts.cbMarketing || genericConsentCopy(brand).cbMarketing!,
     },
     cbTerms: {
       visible: true,
-      text: texts.cbTerms || 'I agree to the Terms of Service and acknowledge the Privacy Policy. *',
+      required: true,
+      text: texts.cbTerms || 'I agree to the Terms of Service and acknowledge the Privacy Policy.',
     },
   }
 }

@@ -5,7 +5,7 @@ import { domainToBrandSlug, resolveSubscribeFormConfig } from './helpers';
 import { fetchSubscribeFormConfigFromNotion } from './notion';
 export { SUBSCRIBE_FORM_FIELD_KEYS } from './types';
 export { buildDefaultSubscribeFormConfig, genericConsentCopy } from './defaults';
-export { isSubscribeFieldVisible, subscribeFieldText, mergeSubscribeFormConfig, isSubscribeFormFieldKey, normalizeBrandDomain, domainToBrandSlug, visibleColumnName, getSubscribeFormConfigIssues, isSubscribeFormConfigCoherent, resolveSubscribeFormConfig, } from './helpers';
+export { isSubscribeFieldVisible, isSubscribeFieldRequired, subscribeFieldText, subscribeFieldLabel, mergeSubscribeFormConfig, isSubscribeFormFieldKey, normalizeBrandDomain, domainToBrandSlug, visibleColumnName, requiredColumnName, getSubscribeFormConfigIssues, isSubscribeFormConfigCoherent, resolveSubscribeFormConfig, } from './helpers';
 export { fetchSubscribeFormConfigFromNotion } from './notion';
 function readEnv(options) {
     return {
@@ -62,7 +62,7 @@ export function createSubscribeFormConfig(options) {
     async function getSubscribeFormConfig() {
         const brand = options.getBrand();
         const slug = domainToBrandSlug(brand.domain);
-        const cached = unstable_cache(() => getSubscribeFormConfigFresh(), ['subscribe-form-config', slug, 'pkg-v1'], { revalidate: 120 });
+        const cached = unstable_cache(() => getSubscribeFormConfigFresh(), ['subscribe-form-config', slug, 'pkg-v2-required'], { revalidate: 120 });
         return cached();
     }
     function getDefaultSubscribeFormConfig() {

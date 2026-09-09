@@ -7,7 +7,9 @@ export type { SubscribeFormConfig, SubscribeFormFieldKey } from './types'
 export { SUBSCRIBE_FORM_FIELD_KEYS } from './types'
 export {
   isSubscribeFieldVisible,
+  isSubscribeFieldRequired,
   subscribeFieldText,
+  subscribeFieldLabel,
   mergeSubscribeFormConfig,
   isSubscribeFormFieldKey,
   normalizeBrandDomain,

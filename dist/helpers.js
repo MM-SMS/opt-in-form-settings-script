@@ -2,9 +2,21 @@ import { SUBSCRIBE_FORM_FIELD_KEYS } from './types';
 export function isSubscribeFieldVisible(config, key) {
     return config[key]?.visible !== false;
 }
+export function isSubscribeFieldRequired(config, key) {
+    if (!isSubscribeFieldVisible(config, key))
+        return false;
+    return config[key]?.required === true;
+}
 export function subscribeFieldText(config, key, fallback = '') {
     const text = config[key]?.text?.trim();
     return text || fallback;
+}
+/** Label/copy with a trailing * when Notion marks the field required. */
+export function subscribeFieldLabel(config, key, fallback = '') {
+    const raw = subscribeFieldText(config, key, fallback).replace(/\s*\*+\s*$/, '').trim();
+    if (!raw)
+        return isSubscribeFieldRequired(config, key) ? '*' : '';
+    return isSubscribeFieldRequired(config, key) ? `${raw} *` : raw;
 }
 export function mergeSubscribeFormConfig(base, overrides) {
     const next = { ...base };
@@ -14,6 +26,7 @@ export function mergeSubscribeFormConfig(base, overrides) {
             continue;
         next[key] = {
             visible: patch.visible ?? base[key].visible,
+            required: patch.required ?? base[key].required,
             text: patch.text?.trim() ? patch.text : base[key].text,
         };
     }
@@ -45,24 +58,29 @@ export function domainToBrandSlug(domain) {
 export function visibleColumnName(field) {
     return `${field}_visible`;
 }
+/** Notion checkbox: `phone` → `phone_required`. */
+export function requiredColumnName(field) {
+    return `${field}_required`;
+}
 /**
  * Config coherence vs typical subscribe API rules. Broken Notion rows fall back to full defaults.
  *
- * - firstName + lastName must stay visible (API requires both)
- * - cbTerms must stay visible (API requires termsPrivacyAccepted)
+ * - firstName + lastName must stay visible (payload still sent; required is a separate flag)
+ * - cbTerms must stay visible
  * - email visible ↔ cbEmail visible
  * - phone visible → cbSms visible (API requires informational SMS when phone is set)
  * - cbSms or cbMarketing visible → phone visible
+ * - required on a hidden field is ignored at runtime; flagged here so the row can be fixed
  */
 export function getSubscribeFormConfigIssues(config) {
     const v = (key) => isSubscribeFieldVisible(config, key);
     const issues = [];
     if (!v('firstName'))
-        issues.push('firstName_visible is off — API requires firstName');
+        issues.push('firstName_visible is off — hide names only if the site API allows empty names');
     if (!v('lastName'))
-        issues.push('lastName_visible is off — API requires lastName');
+        issues.push('lastName_visible is off — hide names only if the site API allows empty names');
     if (!v('cbTerms'))
-        issues.push('cbTerms_visible is off — API requires termsPrivacyAccepted');
+        issues.push('cbTerms_visible is off — hide terms only if the site API allows missing terms');
     if (v('email') && !v('cbEmail'))
         issues.push('email is visible but cbEmail is hidden — email without consent → API 400');
     if (v('cbEmail') && !v('email'))
@@ -73,6 +91,11 @@ export function getSubscribeFormConfigIssues(config) {
         issues.push('cbSms is visible but phone is hidden');
     if (v('cbMarketing') && !v('phone'))
         issues.push('cbMarketing is visible but phone is hidden');
+    for (const key of SUBSCRIBE_FORM_FIELD_KEYS) {
+        if (config[key]?.required && !v(key)) {
+            issues.push(`${key}_required is on but ${key} is hidden — required is ignored while hidden`);
+        }
+    }
     return issues;
 }
 export function isSubscribeFormConfigCoherent(config) {
@@ -81,9 +104,10 @@ export function isSubscribeFormConfigCoherent(config) {
 /** If Notion visibility breaks submit rules, return the built-in full form. */
 export function resolveSubscribeFormConfig(config, fallback) {
     const issues = getSubscribeFormConfigIssues(config);
-    if (issues.length === 0)
+    const blocking = issues.filter((issue) => !issue.includes('_required is on but'));
+    if (blocking.length === 0)
         return { config, usedFallback: false, issues };
     console.warn('[subscribe-form-config] Invalid Notion visibility — using default form:\n- ' +
-        issues.join('\n- '));
-    return { config: fallback, usedFallback: true, issues };
+        blocking.join('\n- '));
+    return { config: fallback, usedFallback: true, issues: blocking };
 }

@@ -1,6 +1,6 @@
 import { Client } from '@notionhq/client';
 import { SUBSCRIBE_FORM_FIELD_KEYS } from './types';
-import { domainToBrandSlug, mergeSubscribeFormConfig, visibleColumnName } from './helpers';
+import { domainToBrandSlug, mergeSubscribeFormConfig, requiredColumnName, visibleColumnName, } from './helpers';
 function richTextToPlain(rich) {
     if (!rich?.length)
         return '';
@@ -46,7 +46,9 @@ async function resolveDataSourceId(notion, databaseId) {
 /**
  * Wide Notion table (one row per brand).
  * Brand = real domain (`lavessia.org`); code matches via `lavessia_org`.
- * `{field}_visible` checkbox = show/hide. `{field}` text = label/copy (empty → code default).
+ * `{field}_visible` checkbox = show/hide.
+ * `{field}_required` checkbox = required when visible.
+ * `{field}` text = label/copy (empty → code default).
  * Notion API / SDK v5+: query via `dataSources.query`.
  */
 export async function fetchSubscribeFormConfigFromNotion(options) {
@@ -71,14 +73,18 @@ export async function fetchSubscribeFormConfigFromNotion(options) {
     const overrides = {};
     for (const key of SUBSCRIBE_FORM_FIELD_KEYS) {
         const visibleCol = visibleColumnName(key);
+        const requiredCol = requiredColumnName(key);
         const hasVisibleCol = props[visibleCol] !== undefined;
+        const hasRequiredCol = props[requiredCol] !== undefined;
         const hasTextCol = props[key] !== undefined;
-        if (!hasVisibleCol && !hasTextCol)
+        if (!hasVisibleCol && !hasRequiredCol && !hasTextCol)
             continue;
         const visible = hasVisibleCol ? readCheckbox(props[visibleCol]) : null;
+        const required = hasRequiredCol ? readCheckbox(props[requiredCol]) : null;
         const text = hasTextCol ? readText(props[key]) : '';
         overrides[key] = {
             ...(visible === null ? {} : { visible }),
+            ...(required === null ? {} : { required }),
             ...(text ? { text } : {}),
         };
     }
