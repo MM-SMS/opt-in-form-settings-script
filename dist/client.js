@@ -7,7 +7,9 @@ export { isSubscribeFieldVisible, isSubscribeFieldRequired, subscribeFieldText, 
  * Prefers `/api/subscription/form-config`, falls back to `initial` or `fallback`.
  */
 export function useSubscribeFormConfig(initial, fallback) {
-    const [config, setConfig] = useState(() => initial ?? fallback);
+    // Undefined until Notion answers: the form waits instead of showing the built-in
+    // defaults for a moment and rearranging its fields once the real config lands.
+    const [config, setConfig] = useState(() => initial);
     useEffect(() => {
         if (initial) {
             setConfig(initial);
@@ -17,15 +19,18 @@ export function useSubscribeFormConfig(initial, fallback) {
         fetch('/api/subscription/form-config')
             .then((res) => (res.ok ? res.json() : null))
             .then((data) => {
-            if (!cancelled && data?.config)
-                setConfig(data.config);
+            if (cancelled)
+                return;
+            // Defaults are for a failed read only, never for the waiting state.
+            setConfig(data?.config ?? fallback);
         })
             .catch(() => {
-            /* keep fallback */
+            if (!cancelled)
+                setConfig(fallback);
         });
         return () => {
             cancelled = true;
         };
-    }, [initial]);
+    }, [initial, fallback]);
     return config;
 }
