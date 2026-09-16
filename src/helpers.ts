@@ -96,7 +96,7 @@ export function requiredColumnName(field: SubscribeFormFieldKey): string {
  * - firstName + lastName must stay visible (payload still sent; required is a separate flag)
  * - cbTerms must stay visible
  * - email visible ↔ cbEmail visible
- * - phone visible → cbSms visible (API requires informational SMS when phone is set)
+ * - phone visible → at least one SMS consent visible (cbSms or cbMarketing)
  * - cbSms or cbMarketing visible → phone visible
  * - required on a hidden field is ignored at runtime; flagged here so the row can be fixed
  */
@@ -113,8 +113,8 @@ export function getSubscribeFormConfigIssues(config: SubscribeFormConfig): strin
   if (v('cbEmail') && !v('email'))
     issues.push('cbEmail is visible but email is hidden — consent without email field')
 
-  if (v('phone') && !v('cbSms'))
-    issues.push('phone is visible but cbSms is hidden — phone without info SMS consent → API 400')
+  if (v('phone') && !v('cbSms') && !v('cbMarketing'))
+    issues.push('phone is visible but both SMS consents are hidden — phone without any SMS consent → API 400')
   if (v('cbSms') && !v('phone')) issues.push('cbSms is visible but phone is hidden')
   if (v('cbMarketing') && !v('phone')) issues.push('cbMarketing is visible but phone is hidden')
 

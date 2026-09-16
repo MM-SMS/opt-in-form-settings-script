@@ -7,6 +7,7 @@ Notion-driven **subscribe form field visibility, required flags, and copy** for 
 - Hidden fields still submit as `''` / `false` (do not change API payload shape)
 - Each field can be required or optional via `{field}_required`
 - Invalid visibility pairs automatically fall back to the full default form
+- SMS consents are interchangeable: with `phone` visible, keep `cbSms` or `cbMarketing` (or both)
 
 Install:
 

@@ -87,7 +87,7 @@ Auto-modal: `useSubscribeFormConfig()` so root layout does **not** fetch Notion 
 - Pairing still applies even if a field is optional:
   - email filled → `cbEmail` required (if both visible)
   - `cbEmail` checked → email required
-  - phone filled → `cbSms` required (if both visible)
+  - phone filled → at least one visible SMS consent required (`cbSms` or `cbMarketing`)
   - `cbSms` or `cbMarketing` checked → phone required
 - Turnstile still required
 - Subscribe API should use the same `isSubscribeFieldRequired` checks so Notion optional names/terms do not 400
@@ -96,7 +96,7 @@ Auto-modal: `useSubscribeFormConfig()` so root layout does **not** fetch Notion 
 Package already falls back to the **full default form** if Notion visibility is incoherent:
 - names + terms must be visible
 - email ↔ cbEmail (both on or both off)
-- phone → cbSms on
+- phone → `cbSms` or `cbMarketing` on
 - cbSms / cbMarketing → phone on
 
 `*_required` on a hidden field is ignored (does not trigger fallback).

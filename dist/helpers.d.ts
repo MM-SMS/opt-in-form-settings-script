@@ -31,7 +31,7 @@ export declare function requiredColumnName(field: SubscribeFormFieldKey): string
  * - firstName + lastName must stay visible (payload still sent; required is a separate flag)
  * - cbTerms must stay visible
  * - email visible ↔ cbEmail visible
- * - phone visible → cbSms visible (API requires informational SMS when phone is set)
+ * - phone visible → at least one SMS consent visible (cbSms or cbMarketing)
  * - cbSms or cbMarketing visible → phone visible
  * - required on a hidden field is ignored at runtime; flagged here so the row can be fixed
  */
